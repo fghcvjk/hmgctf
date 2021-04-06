@@ -1,0 +1,40 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"></head><body><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php
+<br>error_reporting</span><span style="color: #007700">(</span><span style="color: #0000BB">0</span><span style="color: #007700">);
+<br></span><span style="color: #0000BB">highlight_file</span><span style="color: #007700">(</span><span style="color: #0000BB">__FILE__</span><span style="color: #007700">);
+<br>function&nbsp;</span><span style="color: #0000BB">check</span><span style="color: #007700">(</span><span style="color: #0000BB">$input</span><span style="color: #007700">){
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if(</span><span style="color: #0000BB">preg_match</span><span style="color: #007700">(</span><span style="color: #DD0000">"/'|&nbsp;|_|php|;|~|\\^|\\+|eval|{|}/i"</span><span style="color: #007700">,</span><span style="color: #0000BB">$input</span><span style="color: #007700">)){
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;if(preg_match("/'|&nbsp;|_|=|php/",$input)){
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">die(</span><span style="color: #DD0000">'hacker!!!'</span><span style="color: #007700">);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;}else{
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">$input</span><span style="color: #007700">;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;}
+<br>}
+<br>
+<br>function&nbsp;</span><span style="color: #0000BB">waf</span><span style="color: #007700">(</span><span style="color: #0000BB">$input</span><span style="color: #007700">){
+<br>&nbsp;&nbsp;if(</span><span style="color: #0000BB">is_array</span><span style="color: #007700">(</span><span style="color: #0000BB">$input</span><span style="color: #007700">)){
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach(</span><span style="color: #0000BB">$input&nbsp;</span><span style="color: #007700">as&nbsp;</span><span style="color: #0000BB">$key</span><span style="color: #007700">=&gt;</span><span style="color: #0000BB">$output</span><span style="color: #007700">){
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$input</span><span style="color: #007700">[</span><span style="color: #0000BB">$key</span><span style="color: #007700">]&nbsp;=&nbsp;</span><span style="color: #0000BB">waf</span><span style="color: #007700">(</span><span style="color: #0000BB">$output</span><span style="color: #007700">);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+<br>&nbsp;&nbsp;}else{
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$input&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">check</span><span style="color: #007700">(</span><span style="color: #0000BB">$input</span><span style="color: #007700">);
+<br>&nbsp;&nbsp;}
+<br>}
+<br>
+<br></span><span style="color: #0000BB">$dir&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'sandbox/'&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">md5</span><span style="color: #007700">(</span><span style="color: #0000BB">$_SERVER</span><span style="color: #007700">[</span><span style="color: #DD0000">'REMOTE_ADDR'</span><span style="color: #007700">])&nbsp;.&nbsp;</span><span style="color: #DD0000">'/'</span><span style="color: #007700">;
+<br>if(!</span><span style="color: #0000BB">file_exists</span><span style="color: #007700">(</span><span style="color: #0000BB">$dir</span><span style="color: #007700">)){
+<br>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">mkdir</span><span style="color: #007700">(</span><span style="color: #0000BB">$dir</span><span style="color: #007700">);
+<br>}
+<br>switch(</span><span style="color: #0000BB">$_GET</span><span style="color: #007700">[</span><span style="color: #DD0000">"action"</span><span style="color: #007700">]&nbsp;??&nbsp;</span><span style="color: #DD0000">""</span><span style="color: #007700">)&nbsp;{
+<br>&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;</span><span style="color: #DD0000">'pwd'</span><span style="color: #007700">:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;</span><span style="color: #0000BB">$dir</span><span style="color: #007700">;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;</span><span style="color: #DD0000">'upload'</span><span style="color: #007700">:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$data&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$_GET</span><span style="color: #007700">[</span><span style="color: #DD0000">"data"</span><span style="color: #007700">]&nbsp;??&nbsp;</span><span style="color: #DD0000">""</span><span style="color: #007700">;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">waf</span><span style="color: #007700">(</span><span style="color: #0000BB">$data</span><span style="color: #007700">);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">file_put_contents</span><span style="color: #007700">(</span><span style="color: #DD0000">"</span><span style="color: #0000BB">$dir</span><span style="color: #DD0000">"&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #DD0000">"index.php"</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$data</span><span style="color: #007700">);
+<br>}
+<br></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></body></html>
